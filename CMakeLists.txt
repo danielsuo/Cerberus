@@ -3,8 +3,11 @@ PROJECT(Cerberus CXX)
 
 FIND_PACKAGE(Ceres REQUIRED)
 
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+
 SET(SOURCES
     main.cpp
+    Cerberus.cpp
   )
 
 ADD_EXECUTABLE(Cerberus ${SOURCES})

@@ -2,11 +2,12 @@
 #include <cstdio>
 #include <iostream>
 #include <Eigen/Dense>
-#include "ceres/ceres.h"
 #include "ceres/rotation.h"
 #include "glog/logging.h"
 
-#include "Residuals/Residuals.h"
+#include "Cerberus.h"
+#include "Residuals/BundleAdjustmentResidual.h"
+#include "Residuals/PoseGraphResidual.h"
 
 using namespace std;
 
@@ -121,21 +122,8 @@ int main(int argc, char** argv)
     }
   }
 
-  cout << "Setting options" << endl;
-  ceres::Solver::Options options;
-  options.max_num_iterations = 2000;
-  options.minimizer_progress_to_stdout = true;
-  options.linear_solver_type = ceres::SPARSE_NORMAL_CHOLESKY;
-  options.trust_region_strategy_type = ceres::LEVENBERG_MARQUARDT;
-
-  cout << "Setting loss function" << endl;
-  ceres::LossFunction* loss_function_PoseGraph = new ceres::TrivialLoss();
-  ceres::LossFunction* loss_function_BundleAdjustment = new ceres::TrivialLoss();
-
-  // Create residuals for each observation in the bundle adjustment problem. The
-  // parameters for cameras and points are added automatically.
-  ceres::Problem problem_PoseGraph;
-  ceres::Problem problem_BundleAdjustment;
+  Cerberus *c1 = new Cerberus();
+  Cerberus *c2 = new Cerberus();
 
   // Which matched point are we on?
   uint32_t points_count = 0;
@@ -181,8 +169,7 @@ int main(int argc, char** argv)
     // cout << sum << endl;
     // cout << endl;
 
-     ceres::CostFunction *cost_function = new ceres::AutoDiffCostFunction<PoseGraphResidual, 9, 6, 6>(new PoseGraphResidual(Rt_ij, weight_PoseGraph));
-     problem_PoseGraph.AddResidualBlock(cost_function, loss_function_PoseGraph, Rt_i, Rt_j);
+     PoseGraphResidual::AddResidualBlock(c1, Rt_ij, weight_PoseGraph, Rt_i, Rt_j);
 
     // if (printCount++ < iters) {
     //   cout << endl;
@@ -222,11 +209,9 @@ int main(int argc, char** argv)
       double *point_observed_j = points_observed_j + index;
       double *point_predicted = points_predicted + index;
 
-      ceres::CostFunction *point_cost_function_i = new ceres::AutoDiffCostFunction<BundleAdjustmentResidual, 3, 6, 3>(new BundleAdjustmentResidual(point_observed_i, weight_BundleAdjustment));
-      problem_BundleAdjustment.AddResidualBlock(point_cost_function_i, loss_function_BundleAdjustment, Rt_i, point_predicted);
-
-      ceres::CostFunction *point_cost_function_j = new ceres::AutoDiffCostFunction<BundleAdjustmentResidual, 3, 6, 3>(new BundleAdjustmentResidual(point_observed_j, weight_BundleAdjustment));
-      problem_BundleAdjustment.AddResidualBlock(point_cost_function_j, loss_function_BundleAdjustment, Rt_j, point_predicted);
+      // TODO: replace these with pointer to Cerberus
+      BundleAdjustmentResidual::AddResidualBlock(c2, point_observed_i, weight_BundleAdjustment, Rt_i, point_predicted);
+      BundleAdjustmentResidual::AddResidualBlock(c2, point_observed_j, weight_BundleAdjustment, Rt_j, point_predicted);
     }
 
     points_count += num_points;
@@ -235,24 +220,11 @@ int main(int argc, char** argv)
 
   //----------------------------------------------------------------
 
-  //----------------------------------------------------------------
-  // Make Ceres automatically detect the bundle structure. Note that
-  // the standard solver, SPARSE_NORMAL_CHOLESKY, also works fine but
-  // it is slower for standard bundle adjustment problems.
-  ceres::Solver::Summary summary_BundleAdjustment;
-  ceres::Solver::Summary summary_PoseGraph;
-  ceres::Solver::Summary summary_PoseGraphBA;
-  ceres::Solver::Summary Rsummary;
-  ceres::Solver::Summary tsummary;
-
-
   cout << "Starting full pose graph solver" << endl;
-  ceres::Solve(options, &problem_PoseGraph, &summary_PoseGraph);
-  cout << summary_PoseGraph.BriefReport() << endl;
+  c1->solve();
 
   cout << "Starting pose graph BA solver" << endl;
-  ceres::Solve(options, &problem_BundleAdjustment, &summary_PoseGraphBA);
-  cout << summary_PoseGraphBA.BriefReport() << endl;
+  c2->solve();
 
   // obtain camera matrix from parameters
   for(int cameraID = 0; cameraID < nCam; cameraID++){

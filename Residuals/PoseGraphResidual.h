@@ -1,6 +1,8 @@
 #ifndef POSEGRAPHRESIDUAL_H
 #define POSEGRAPHRESIDUAL_H
 
+#include "Residuals.h"
+
 class PoseGraphResidual {
 public:
   PoseGraphResidual(double *m_Rt_ij, double *m_weight): m_Rt_ij(m_Rt_ij), m_weight(m_weight) {}
@@ -55,6 +57,16 @@ public:
     residuals[8] = weight[8] * (t_p[2] - t_o[2]);
 
     return true;
+  }
+
+  // Convenience functions that are horribly designed.
+  static CostFunction *GenerateCostFunction(double *Rt_ij, double *weight) {
+    return new AutoDiffCostFunction<PoseGraphResidual, 9, 6, 6>(new PoseGraphResidual(Rt_ij, weight));
+  }
+
+  static void AddResidualBlock(Cerberus *solver, double *Rt_ij, double *weight, double *Rt_i, double *Rt_j) {
+    CostFunction *cost = PoseGraphResidual::GenerateCostFunction(Rt_ij, weight);
+    solver->problem.AddResidualBlock(cost, solver->loss, Rt_i, Rt_j);
   }
 
   double *m_Rt_ij;
