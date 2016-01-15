@@ -1,15 +1,14 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0)
-PROJECT(Cerberus CXX)
+cmake_minimum_required (VERSION 2.6.0)
+project (Cerberus CXX)
 
-FIND_PACKAGE(Ceres REQUIRED)
+find_package (Ceres REQUIRED)
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
-
-SET(SOURCES
+set (SOURCES
     main.cpp
     Cerberus.cpp
   )
 
-ADD_EXECUTABLE(Cerberus ${SOURCES})
-TARGET_LINK_LIBRARIES(Cerberus ${CERES_LIBRARIES})
-
+add_library (Cerberus ${SOURCES})
+target_link_libraries (Cerberus ${CERES_LIBRARIES})
+target_include_directories (Cerberus PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories (Cerberus PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Residuals)
