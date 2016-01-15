@@ -1,7 +1,8 @@
 #ifndef BUNDLEADJUSTMENTRESIDUAL_H
 #define BUNDLEADJUSTMENTRESIDUAL_H
 
-#include "Residuals.h"
+#include "ceres/ceres.h"
+#include "Cerberus.h"
 
 class BundleAdjustmentResidual {
 public:

@@ -1,7 +1,8 @@
 #ifndef POSEGRAPHRESIDUAL_H
 #define POSEGRAPHRESIDUAL_H
 
-#include "Residuals.h"
+#include "ceres/ceres.h"
+#include "Cerberus.h"
 
 class PoseGraphResidual {
 public:
