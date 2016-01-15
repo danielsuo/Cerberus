@@ -2,6 +2,7 @@
 #define POSEGRAPHRESIDUAL_H
 
 #include "ceres/ceres.h"
+#include "ceres/rotation.h"
 #include "Cerberus.h"
 
 class PoseGraphResidual {

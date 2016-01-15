@@ -2,6 +2,7 @@
 #define BUNDLEADJUSTMENTRESIDUAL_H
 
 #include "ceres/ceres.h"
+#include "ceres/rotation.h"
 #include "Cerberus.h"
 
 class BundleAdjustmentResidual {
