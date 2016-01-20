@@ -53,4 +53,24 @@ template <typename T, typename U> void AngleAxisAndTranslationToTransformationMa
   }
 }
 
+// Rotate a point about axis and translate
+template <typename T, typename U> void AngleAxisRotateAndTranslatePoint(const U *Rt, T *from, U *to, bool inverse = false) {
+  U tmp[3] = { U(from[0]), U(from[1]), U(from[2]) };
+
+  if (!inverse) {
+    AngleAxisRotatePoint(Rt, tmp, to);
+
+    to[0] += Rt[3];
+    to[1] += Rt[4];
+    to[2] += Rt[5];
+  } else {
+    to[0] = tmp[0] - Rt[3];
+    to[1] = tmp[1] - Rt[4];
+    to[2] = tmp[2] - Rt[5];
+
+    U IRt[3] = { -Rt[0], -Rt[1], -Rt[2] };
+    AngleAxisRotatePoint(IRt, to, to);
+  }
+}
+
 #endif
