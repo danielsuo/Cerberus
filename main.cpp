@@ -201,13 +201,15 @@ int main(int argc, char** argv)
       points_observed_j[index + 2] = cameraRt_ij_points_observed_j[t_index + 2];
 
       // Fill up predicted points
-      points_predicted[index] = cameraRt_ij_points_predicted[t_index];
-      points_predicted[index + 1] = cameraRt_ij_points_predicted[t_index + 1];
-      points_predicted[index + 2] = cameraRt_ij_points_predicted[t_index + 2];
+      // points_predicted[index] = cameraRt_ij_points_predicted[t_index];
+      // points_predicted[index + 1] = cameraRt_ij_points_predicted[t_index + 1];
+      // points_predicted[index + 2] = cameraRt_ij_points_predicted[t_index + 2];
 
       double *point_observed_i = points_observed_i + index;
       double *point_observed_j = points_observed_j + index;
       double *point_predicted = points_predicted + index;
+
+      AngleAxisRotateAndTranslatePoint(Rt_i, point_observed_i, point_predicted);
 
       // TODO: replace these with pointer to Cerberus
       BundleAdjustmentResidual::AddResidualBlock(c2, point_observed_i, weight_BundleAdjustment, Rt_i, point_predicted);
@@ -220,8 +222,8 @@ int main(int argc, char** argv)
 
   //----------------------------------------------------------------
 
-  cout << "Starting full pose graph solver" << endl;
-  c1->solve();
+  // cout << "Starting full pose graph solver" << endl;
+  // c1->solve();
 
   cout << "Starting pose graph BA solver" << endl;
   c2->solve();

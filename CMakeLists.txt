@@ -8,7 +8,7 @@ set (SOURCES
     Cerberus.cpp
   )
 
-add_library (Cerberus ${SOURCES})
+add_executable (Cerberus ${SOURCES})
 target_link_libraries (Cerberus ${CERES_LIBRARIES})
 target_include_directories (Cerberus PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories (Cerberus PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Residuals)
