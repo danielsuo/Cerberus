@@ -20,13 +20,14 @@ public:
     T point_observed[3] = {T(m_point_observed[0]), T(m_point_observed[1]), T(m_point_observed[2])};
     T point_predicted[3] = {m_point_predicted[0], m_point_predicted[1], m_point_predicted[2]};
 
-    // Rt[0,1,2] are the angle-axis rotation.
-    ceres::AngleAxisRotatePoint(Rt, point_observed, point_observed);
+    AngleAxisRotateAndTranslatePoint(Rt, point_observed, point_observed);
+    // // Rt[0,1,2] are the angle-axis rotation.
+    // ceres::AngleAxisRotatePoint(Rt, point_observed, point_observed);
 
-    // Rt[3,4,5] are the translation.
-    point_observed[0] += Rt[3];
-    point_observed[1] += Rt[4];
-    point_observed[2] += Rt[5];
+    // // Rt[3,4,5] are the translation.
+    // point_observed[0] += Rt[3];
+    // point_observed[1] += Rt[4];
+    // point_observed[2] += Rt[5];
 
     // The error is the difference between the predicted and observed position.
     residuals[0] = weight[0] * (point_predicted[0] - point_observed[0]);
