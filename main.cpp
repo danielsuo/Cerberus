@@ -68,7 +68,7 @@ int main(int argc, char** argv)
   fread((void*)(cameraRt_ij_points_observed_i), sizeof(double), 3*nMatchedPoints, fp);
 
   // Read all of the matched key points for a given pair (3D
-  // coordinates in i's coordinates)
+  // coordinates in j's coordinates)
   double *cameraRt_ij_points_observed_j = new double[3*nMatchedPoints];
   cout << "Reading cameraRt_ij_points_observed_j" << endl;
   fread((void*)(cameraRt_ij_points_observed_j), sizeof(double), 3*nMatchedPoints, fp);
