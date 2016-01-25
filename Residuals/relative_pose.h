@@ -83,4 +83,68 @@ class RelativeRotationCostFunctor {
   double weight_;
 };
 
+class CircleConstraintCostFunctor {
+ public:
+  CircleConstraintCostFunctor(const Eigen::Vector3d &center,
+                              const Eigen::Vector3d &normal,
+                              double radius,
+                              double weight = 1):
+      center_(center), normal_(normal), radius_(radius), weight_(weight) {
+    normal_.normalize();
+  }
+
+  template <typename T>
+  bool operator () (const T* const position_ptr, T* residuals) const {
+    typedef Eigen::Matrix<T, 3, 1> VectorT;
+    VectorT position, direction, rejection;
+    VectorT center_t, normal_t;
+    for (int i = 0; i < 3; ++i) {
+      position[i] = position_ptr[i];
+      center_t[i] = T(center_[i]);
+      normal_t[i] = T(normal_[i]);
+    }
+    direction = position - center_t;
+    rejection = direction - direction.dot(normal_t) * normal_t;
+    residuals[0] = weight_ * (rejection.norm() - radius_);
+    return true;
+  }
+
+ private:
+  Eigen::Vector3d center_;
+  Eigen::Vector3d normal_;
+  double radius_;
+  double weight_;
+};
+
+class LineConstraintCostFunctor {
+ public:
+  LineConstraintCostFunctor(const Eigen::Vector3d &start,
+                            const Eigen::Vector3d &direction,
+                            double weight = 1) :
+      start_(start), direction_(direction), weight_(weight) {
+    direction_.normalize();
+  }
+
+  template <typename T>
+  bool operator () (const T* const position_ptr, T* residuals) const {
+    typedef Eigen::Matrix<T, 3, 1> VectorT;
+    VectorT position, direction, rejection;
+    VectorT start_t, line_direction_t;
+    for (int i = 0; i < 3; ++i) {
+      position[i] = position_ptr[i];
+      start_t[i] = T(start_[i]);
+      line_direction_t[i] = T(direction_[i]);
+    }
+    direction = position - start_t;
+    rejection = direction - direction.dot(line_direction_t) * line_direction_t;
+    residuals[0] = weight_ * rejection.norm();
+    return true;
+  }
+
+ private:
+  Eigen::Vector3d start_;
+  Eigen::Vector3d direction_;
+  double weight_;
+};
+
 #endif //CERBERUS_RELATIVE_POSE_H
