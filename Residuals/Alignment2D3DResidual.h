@@ -28,12 +28,12 @@ public:
     residuals[4] = T(observed[5]) * (p[2] - T(observed[4])) * w3Dv2D;
 
     // let p[2] ~= 0
-    if (T(0.0)<=p[2]){
-      if(p[2]<EPS){
+    if (T(0.0) <= p[2]){
+      if(p[2] < EPS){
         p[2] = EPS;
       }
     }else{
-      if (p[2]>-EPS){
+      if (p[2] > -EPS){
         p[2] = -EPS;
       }
     }

@@ -9,5 +9,7 @@
 #include "AlignmentBoxResidual.h"
 #include "Alignment2D3DResidual.h"
 #include "Alignment2DFocalLengthResidual.h"
+#include "Alignment3DFixedResidual.h"
+#include "relative_pose.h"
 
 #endif
