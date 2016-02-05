@@ -223,7 +223,7 @@ int main(int argc, char** argv)
   //----------------------------------------------------------------
 
   // cout << "Starting full pose graph solver" << endl;
-  // c1->solve();
+  c1->solve();
 
   cout << "Starting pose graph BA solver" << endl;
   c2->solve();
