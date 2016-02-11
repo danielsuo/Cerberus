@@ -6,6 +6,7 @@ Cerberus::Cerberus() {
   options.minimizer_progress_to_stdout = true;
   options.linear_solver_type = SPARSE_NORMAL_CHOLESKY;
   options.trust_region_strategy_type = LEVENBERG_MARQUARDT;
+  options.num_threads = 8;
 
   // Set default loss function
   loss = new TrivialLoss();
