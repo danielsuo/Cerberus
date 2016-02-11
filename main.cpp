@@ -201,9 +201,9 @@ int main(int argc, char** argv)
       points_observed_j[index + 2] = cameraRt_ij_points_observed_j[t_index + 2];
 
       // Fill up predicted points
-      // points_predicted[index] = cameraRt_ij_points_predicted[t_index];
-      // points_predicted[index + 1] = cameraRt_ij_points_predicted[t_index + 1];
-      // points_predicted[index + 2] = cameraRt_ij_points_predicted[t_index + 2];
+      points_predicted[index] = cameraRt_ij_points_predicted[t_index];
+      points_predicted[index + 1] = cameraRt_ij_points_predicted[t_index + 1];
+      points_predicted[index + 2] = cameraRt_ij_points_predicted[t_index + 2];
 
       double *point_observed_i = points_observed_i + index;
       double *point_observed_j = points_observed_j + index;
@@ -262,64 +262,3 @@ int main(int argc, char** argv)
 
   return 0;
 }
-
- // double t_o[3];
- //    double t_p[3];
-
- //    ceres::AngleAxisRotatePoint(Rt_i, Rt_ij + 3, t_o);
- //    t_p[0] = Rt_j[3] - Rt_i[3];
- //    t_p[1] = Rt_j[4] - Rt_i[4];
- //    t_p[2] = Rt_j[5] - Rt_i[5];
-
- //    double IR_i[3] = {-Rt_i[0], -Rt_i[1], -Rt_i[2]};
- //    // Z and y vectors to constrain rotation
- //    double z[3] = {0, 0, 1}; double z_o[3]; double z_p[3];
- //    double y[3] = {0, 1, 0}; double y_o[3]; double y_p[3];
-
- //    ceres::AngleAxisRotatePoint(Rt_ij, z, z_o);
- //    ceres::AngleAxisRotatePoint(Rt_j, z, z_p);
- //    ceres::AngleAxisRotatePoint(IR_i, z_p, z_p);
-
- //    ceres::AngleAxisRotatePoint(Rt_ij, y, y_o);
- //    ceres::AngleAxisRotatePoint(Rt_j, y, y_p);
- //    ceres::AngleAxisRotatePoint(IR_i, y_p, y_p);
-
- //    sum += pow(weight * (z_p[0] - z_o[0]), 2.0);
- //    sum += pow(weight * (z_p[1] - z_o[1]), 2.0);
- //    sum += pow(weight * (z_p[2] - z_o[2]), 2.0);
- //    sum += pow(weight * (y_p[0] - y_o[0]), 2.0);
- //    sum += pow(weight * (y_p[1] - y_o[1]), 2.0);
- //    sum += pow(weight * (y_p[2] - y_o[2]), 2.0);
-
- //    // Create observed translation vector
- //    double t_ij_observed[3] = {Rt_ij[3], Rt_ij[4], Rt_ij[5]};
- //    ceres::AngleAxisRotatePoint(Rt_i, t_ij_observed, t_ij_observed);
-
- //    // Create predicted translation vector. Note this should be t_j -
- //    // t_i, but because Rt_j and Rt_i are world-to-camera and Rt_ij is
- //    // camera-to-world
- //    double t_ij_predicted[3] = {Rt_j[3] - Rt_i[3], Rt_j[4] - Rt_i[4], Rt_j[5] - Rt_i[5]};
-
- //    sum += pow(weight * 2 * (t_ij_predicted[0] - t_ij_observed[0]), 2.0);
- //    sum += pow(weight * 2 * (t_ij_predicted[1] - t_ij_observed[1]), 2.0);
- //    sum += pow(weight * 2 * (t_ij_predicted[2] - t_ij_observed[2]), 2.0);
-
- //    double p_o[3];
- //    double p_p[3];
-
- //    // Compute observed view direction vector from world to camera by
- //    // relative rotation between i and j
- //    ceres::AngleAxisRotatePoint(Rt_ij, z, p_o);
-
- //    // Rotate from according to j's rotation
- //    ceres::AngleAxisRotatePoint(Rt_j, z, p_p);
-
- //    // Rotate back from according to i's rotation
- //    ceres::AngleAxisRotatePoint(IR_i, p_p, p_p);
-
- //    sum += t_p[0] - t_o[0] + t_p[1] - t_o[1] + t_p[2] - t_o[2] + p_p[0] - p_o[0] + p_p[1] - p_o[1] + p_p[2] - p_o[2];
-
- //    cout << sum << " " << weight << endl;
- //    cout << t_o[0] << " " << t_o[1] << " " << t_o[2] << " " << p_o[0] << " " << p_o[1] << " " << p_o[2] << endl;
- //    cout << t_p[0] << " " << t_p[1] << " " << t_p[2] << " " << p_p[0] << " " << p_p[1] << " " << p_p[2] << endl;
- //    cout << endl;
